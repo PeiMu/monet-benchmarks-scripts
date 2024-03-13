@@ -9,6 +9,7 @@ db_name="tpch-sf-1"
 db_port=50000
 hostname=localhost
 num_queries=22
+iteration=10
 
 function usage {
 	AUTHOR="Eyal Rozenberg"
@@ -113,22 +114,28 @@ for binary in mclient; do
 done
 
 
+rm -f result/*
+mkdir -p result/
+
 mkdir -p "$result_dir"
-query_number_length=${#num_queries}
-for ((i=1;i<=num_queries;i++)); do 
-	formatted_query_number=$(printf "%0${query_number_length}d" $i)
-	[[ -r $query_dir/$formatted_query_number.sql ]] || die "Can't read query file $query_dir/$formatted_query_number.sql"
-	query=$(cat $query_dir/$formatted_query_number.sql) 
+
+for i in $(eval echo {1.."${iteration}"}); do
+  for sql in "${query_dir}"/*; do
+	[[ -r $sql ]] || die "Can't read query file $query_dir/$formatted_query_number.sql"
+	query=$(cat $sql) 
 	if [[ "$write_results" ]]; then
 		output_file="$result_dir/$formatted_query_number.ans"
-		[[ "$be_verbose" ]] && echo "mclient -lsql -f $format -d $db_name -p $db_port -h $hostname -s \"$query\"  > \"$output_file\""
-		mclient -lsql -f $format -d $db_name -p $db_port -h $hostname -s "$query" > $output_file
+		[[ "$be_verbose" ]] && echo "mclient -lsql -f $format -d $db_name -p $db_port -h $hostname -s \"$query\" --timer=performance  > \"$output_file\""
+		mclient -lsql -f $format -d $db_name -p $db_port -h $hostname -s "$query" --timer=performance > $output_file
 	else
 		if ! db_is_up $db_name; then monetdb -p $db_port stop $db_name > /dev/null ;  fi
 		monetdb -p $db_port start $db_name > /dev/null
 		[[ "$be_verbose" ]] && echo "Query $formatted_query_number: $query" 
-		mclient -lsql -f $format -d $db_name -p $db_port -h $hostname -s "$query" 
+		echo "execute ${query}" 2>&1|tee -a perf_${db_name}_${i}.txt;
+		mclient -lsql -f $format -d $db_name -p $db_port -h $hostname -s "$query" --timer=performance 2>&1|tee -a perf_${db_name}_${i}.txt;
 		[[ "$be_verbose" ]] && echo 
 	fi
+  done
 done
 
+mv perf_${db_name}_* result/.

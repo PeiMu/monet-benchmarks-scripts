@@ -60,3 +60,23 @@ Options:
 ### Questions? Requests? Feedback? Bugs?
 
 Feel free to [open an issue](https://github.com/eyalroz/tpch-tools/issues) or [write me](mailto:E.Rozenberg@cwi.nl).
+
+
+
+-----------------------------------------------------------
+
+## Example
+
+### Generate table and load data
+
+Only run it once.
+
+```bash
+./scripts/setup-tpch-db -r -G -l log.txt -d tpch -f /home/pei/Project/project_bins/monetdb_data -p LINUX -D /home/pei/Project/benchmarks/tpch-postgres/dbgen/out -k -v
+```
+
+### Run with TPC-H
+
+```bash
+./scripts/run_benchmark_queries.sh -v -q /home/pei/Project/benchmarks/tpch-postgres/dbgen/out/skinner_pure_queries -d tpch -f csv
+```
