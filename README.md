@@ -72,7 +72,7 @@ Feel free to [open an issue](https://github.com/eyalroz/tpch-tools/issues) or [w
 Only run it once.
 
 ```bash
-./scripts/setup-tpch-db -r -G -l log.txt -d tpch -f /home/pei/Project/project_bins/monetdb_data -p LINUX -D /home/pei/Project/benchmarks/tpch-postgres/dbgen/out -k -v
+./scripts/setup-tpch-db -r -G -l log -d tpch -f /home/pei/Project/project_bins/monetdb_data -p LINUX -D /home/pei/Project/benchmarks/tpch-postgres/dbgen/out -k -v -b TPC-H
 ```
 
 ### Run with TPC-H
