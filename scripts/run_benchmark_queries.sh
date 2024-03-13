@@ -131,7 +131,7 @@ for i in $(eval echo {1.."${iteration}"}); do
 		if ! db_is_up $db_name; then monetdb -p $db_port stop $db_name > /dev/null ;  fi
 		monetdb -p $db_port start $db_name > /dev/null
 		[[ "$be_verbose" ]] && echo "Query $formatted_query_number: $query" 
-		echo "execute ${query}" 2>&1|tee -a perf_${db_name}_${i}.txt;
+		echo "execute ${sql}" 2>&1|tee -a perf_${db_name}_${i}.txt;
 		mclient -lsql -f $format -d $db_name -p $db_port -h $hostname -s "$query" --timer=performance 2>&1|tee -a perf_${db_name}_${i}.txt;
 		[[ "$be_verbose" ]] && echo 
 	fi
