@@ -361,7 +361,12 @@ if [[ "$need_to_create_the_db" ]]; then
 		echo "$add_key_constraints"
 		run_mclient "$add_key_constraints"
 	elif [[ "$benchmark" = "JOB" ]]; then
-		echo "todo: create table"
+		create_without_constraints=$(cat imdb_setup/create_without_constraints.sql)
+		echo "$create_without_constraints"
+		run_mclient "$create_without_constraints"
+                add_index=$(cat imdb_setup/add_index.sql)
+                echo "$add_index"
+                run_mclient "$add_index"
 	fi
 fi
 
@@ -396,7 +401,9 @@ if [[ "$benchmark" = "TPC-H" ]]; then
 	echo "$load_data"
 	run_mclient "$load_data" $output_format
 elif [[ "$benchmark" = "JOB"  ]]; then
-	echo "todo: load data"
+	load_data=$(cat imdb_setup/load_data.sql)
+        echo "$load_data" 
+        run_mclient "$load_data" $output_format
 fi
 
 [[ -n "$keep_raw_tables" ]] || rm -r $data_generation_dir
