@@ -114,8 +114,8 @@ for binary in mclient; do
 done
 
 
-rm -f result/*
-mkdir -p result/
+rm -f result/$db_name/*
+mkdir -p result/$db_name/
 
 mkdir -p "$result_dir"
 
@@ -138,4 +138,4 @@ for i in $(eval echo {1.."${iteration}"}); do
   done
 done
 
-mv perf_${db_name}_* result/.
+mv perf_${db_name}_* result/$db_name/.
